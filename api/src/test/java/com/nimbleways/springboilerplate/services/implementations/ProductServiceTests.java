@@ -63,6 +63,16 @@ class ProductServiceTests {
     }
 
     @Test
+    void notifyDelayPersistsLeadTimeAndNotifies() {
+        Product product = product("NORMAL", 5, 0, null, null, null);
+
+        productService.notifyDelay(15, product);
+
+        assertEquals(15, product.getLeadTime());
+        verify(productRepository).save(product);
+        verify(notificationService).sendDelayNotification(15, product.getName());
+    }
+
     @Test
     void doesNotNotifyWhenNormalProductHasNoPositiveLeadTime() {
         Product product = product("NORMAL", 0, 0, null, null, null);
